@@ -60,25 +60,30 @@ class Middleware
     {
         $resolver = $this->makeResolver($request, $args);
 
-        $limiter = $this->configureLimiter($resolver);
-
-        if ($limiter->exceeded()) {
-            $limiter->timeout($resolver->duration());
-            throw $this->buildException(
-                $limiter->limit(),
-                $limiter->remaining(),
-                $limiter->backoff()
-            );
+        if (!is_iterable($resolver)) {
+            $resolver = [$resolver];
         }
 
-        $limiter->hit();
+        foreach ($resolver as $instance) {
+            $limiter = $this->configureLimiter($instance);
 
-        $response = $next($request);
+            if ($limiter->exceeded()) {
+                $limiter->timeout($resolver->duration());
+                throw $this->buildException(
+                    $limiter->limit(),
+                    $limiter->remaining(),
+                    $limiter->backoff()
+                );
+            }
 
-        return $this->addHeaders($response,
-            $limiter->limit(),
-            $limiter->remaining()
-        );
+            $limiter->hit();
+
+            echo "Instance {$instance->key()} has {$limiter->remaining()} remaining<br /><br />>";
+
+        }
+
+        die("??");
+        return $next($request);
     }
 
     /**
@@ -116,13 +121,14 @@ class Middleware
      */
     protected function configureLimiter(Resolver $resolver): Limiter
     {
-        $this->limiter->configure(
+        $limiter = app(Limiter::class);
+        $limiter->configure(
             $resolver->key(),
             $resolver->max(),
             $resolver->rate()
         );
 
-        return $this->limiter;
+        return $limiter;
     }
 
     /**

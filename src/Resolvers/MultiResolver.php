@@ -2,6 +2,7 @@
 
 namespace ArtisanSdk\RateLimiter\Resolvers;
 
+use App\Models\Basket\Repository;
 use ArtisanSdk\RateLimiter\Contracts\Resolver;
 use Closure;
 use RuntimeException;
@@ -64,11 +65,36 @@ class MultiResolver implements Resolver, \Iterator
         $this->generateKeys();
     }
 
-    public function generateKeys()
+    public function generateKeys(): self
     {
         $route = $this->request->route();
-        var_dump($route);
-        die("!");
+        $basketId = $route->parameter('checkoutId');
+
+        /**
+         * @var Repository $basketRepo
+         */
+        $basketRepo = app(Repository::class);
+
+        $basket = $basketRepo->getBySecret($basketId);
+
+        $keys = [
+            sha1($this->request->ip()),
+        ];
+
+        if ($basket) {
+            $keys = array_merge(
+                $keys,
+                [
+                    sha1($basket->email),
+                    sha1($basket->id),
+                    sha1($basket->username)
+                ]
+            );
+        }
+
+        $this->keys = $keys;
+
+        return $this;
     }
 
     /**
@@ -115,7 +141,7 @@ class MultiResolver implements Resolver, \Iterator
 
     public function current()
     {
-        current($this->keys) ? $this : false;
+        return current($this->keys) ? $this : false;
     }
 
     public function next()
@@ -125,11 +151,11 @@ class MultiResolver implements Resolver, \Iterator
 
     public function rewind()
     {
-        $this->rewind($this->keys);
+        reset($this->keys);
     }
 
     public function valid()
     {
-        current($this->keys) ? true : false;
+        return current($this->keys) ? true : false;
     }
 }
