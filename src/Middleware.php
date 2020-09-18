@@ -144,7 +144,7 @@ class Middleware
     {
         $headers = $this->getHeaders($limit, $remaining, $backoff);
 
-        return new Exception('Too Many Requests', null, $headers);
+        return new Exception("We've received too many payment attempts from this device. Please try again later.", null, $headers);
     }
 
     /**
