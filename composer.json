@@ -1,9 +1,13 @@
 {
-    "name": "artisansdk/ratelimiter",
+    "name": "liam-wiltshire/leaky-rate-limiter",
     "description": "A leaky bucket rate limiter and middleware controls for route-level granularity.",
     "type": "library",
     "license": "MIT",
     "authors": [
+        {
+            "name": "Liam Wiltshire",
+            "email": "liam@tebex.co.uk"
+        },
         {
             "name": "Daniel LaBarge",
             "email": "daniel@artisanscollaborative.com"
