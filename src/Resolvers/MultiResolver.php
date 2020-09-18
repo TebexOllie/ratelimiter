@@ -87,7 +87,8 @@ class MultiResolver implements Resolver, \Iterator
                 [
                     sha1($basket->email),
                     sha1($basket->id),
-                    sha1($basket->username)
+                    sha1($basket->username),
+                    sha1($basket->sift_session)
                 ]
             );
         }

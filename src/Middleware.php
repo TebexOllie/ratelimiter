@@ -78,11 +78,10 @@ class Middleware
 
             $limiter->hit();
 
-            echo "Instance {$instance->key()} has {$limiter->remaining()} remaining<br /><br />>";
+             \Illuminate\Support\Facades\Log::info("Instance {$instance->key()} has {$limiter->remaining()} remaining");
 
         }
 
-        die("??");
         return $next($request);
     }
 
