@@ -60,6 +60,8 @@ class MultiResolver implements Resolver, \Iterator
         $this->max = $max ?? 60;
         $this->rate = $rate ?? 1;
         $this->duration = $duration ?? 1;
+
+        $this->generateKeys();
     }
 
     public function generateKeys()
