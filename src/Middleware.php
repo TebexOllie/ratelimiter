@@ -69,6 +69,10 @@ class Middleware
 
             if ($limiter->exceeded()) {
                 $limiter->timeout($resolver->duration());
+                \Illuminate\Support\Facades\Log::info("Instance {$instance->key()} has been rate limited");
+                if (function_exists("newrelic_notice_error")) {
+                    newrelic_notice_error("Instance {$instance->key()} has been rate limited");
+                }
                 throw $this->buildException(
                     $limiter->limit(),
                     $limiter->remaining(),
@@ -77,9 +81,6 @@ class Middleware
             }
 
             $limiter->hit();
-
-             \Illuminate\Support\Facades\Log::info("Instance {$instance->key()} has {$limiter->remaining()} remaining");
-
         }
 
         return $next($request);

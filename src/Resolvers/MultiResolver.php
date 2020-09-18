@@ -68,7 +68,7 @@ class MultiResolver implements Resolver, \Iterator
     public function generateKeys(): self
     {
         $route = $this->request->route();
-        $basketId = $route->parameter('checkoutId');
+        $basketId = $route->parameter('id');
 
         /**
          * @var Repository $basketRepo
