@@ -92,7 +92,7 @@ class MultiResolver implements Resolver, \Iterator
             );
         }
         
-        if ($bucket->fingerprint) {
+        if ($basket->fingerprint) {
             $keys[] = sha1($basket->fingerprint);
         }
 
