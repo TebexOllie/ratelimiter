@@ -97,7 +97,7 @@ class MultiResolver implements Resolver, \Iterator
         }
         
         if ($bin = $this->request->get('bin')) {
-            $keys[] = $bin;
+            $keys[] = sha1($bin);
         }
 
         $this->keys = $keys;
