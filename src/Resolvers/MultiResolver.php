@@ -87,13 +87,17 @@ class MultiResolver implements Resolver, \Iterator
                 [
                     sha1($basket->email),
                     sha1($basket->id),
-                    sha1($basket->username)                    
+                    sha1($basket->username)
                 ]
             );
         }
-        
+
         if ($basket->fingerprint) {
             $keys[] = sha1($basket->fingerprint);
+        }
+        
+        if ($bin = $this->request->get('bin')) {
+            $keys[] = $bin;
         }
 
         $this->keys = $keys;
